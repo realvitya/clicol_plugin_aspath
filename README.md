@@ -8,11 +8,13 @@ Example:
 	 *>                    10.123.234.154                         0 21302 13979 65120 64932 ? ATT ABC --- EFH
 
 Sitecode mappings are read from `~/.clicol/plugin-aspath.db`.
-Format of that file:
-{ASNUM}\t{DESCRIPTION}\t{SITECODE}
 
-More column is ok. Column separator is TAB!
+Format of that file:
+`{ASNUM}\t{DESCRIPTION}\t{SITECODE}`
+
+3 columns required, more columns are ok. Column separator is TAB!
 Example:
-	21302   AT&T EAME       ATT     -       Vendor
-	13979   AT&T NA ATT
+
+	21302	AT&T EAME	ATT	-	Vendor
+	13979	AT&T NA	ATT
 
