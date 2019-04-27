@@ -4,8 +4,8 @@ Plugin for clicol which helps troubleshooting by resolving sitecodes for AS path
 
 Example:
 
-	 * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ? ATT ABC --- EFH
-	 *>                    10.123.234.154                         0 21302 13979 65120 64932 ? ATT ABC --- EFH
+	 * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ? __ATT ABC --- EFH__
+	 *>                    10.123.234.154                         0 21302 13979 65120 64932 ? __ATT ABC --- EFH__
 
 Sitecode mappings are read from `~/.clicol/plugin-aspath.db`.
 
