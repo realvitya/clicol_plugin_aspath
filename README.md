@@ -1,0 +1,2 @@
+CLICOL PLUGIN ASPATH
+====================
