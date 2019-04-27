@@ -3,8 +3,8 @@
  CLICOL plugin package for aspath resolution
 
  example output for sh ip bgp:
- * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ? (ATT ABC CDE EFH)
- *>                    10.123.234.154                         0 21302 13979 65120 64932 ? (ATT ABC CDE EFH)
+ * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ? ATT ABC --- EFH
+ *>                    10.123.234.154                         0 21302 13979 65120 64932 ? ATT ABC --- EFH
 """
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -25,7 +25,10 @@ class ASPath:
             return
         while True:
 	    try:
-            	(AS,SITE,SITECODE) = dbfile.readline().split("\t")
+            	line = dbfile.readline().split("\t")
+                if len(line)<3:
+                    break
+            	(AS,SITE,SITECODE) = (line[0], line[1], line[2])  #  First 3 value is interesting
 	    	self.db[AS] = SITECODE.rstrip()
 	    except EOFError:
                 break
