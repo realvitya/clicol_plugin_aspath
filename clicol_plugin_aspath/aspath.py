@@ -17,10 +17,21 @@ class ASPath:
     loadonstart = True
     db = dict()
     regex = re.compile(r"^( [^0-9]{3} +(?:[0-9\.:]+/[0-9]+ +(?:[0-9\.:]+ +[0-9]+ +[0-9]+ +)|[0-9.]+ +)[0-9]+ +)((?:[0-9]+ )+)([ie?])([\r\n]*)$", re.M)
+    cmap = dict()
+    setup = dict()
+    unknownstr = "---"
 
-    def __init__(self):
+    def __init__(self, setup):
+        #pudb.set_trace()
+        (self.setup, self.cmap) = setup
+        if 'dbfile' in self.setup.keys():  #  Set custom dbfile
+            dbfilename = self.setup['dbfile']
+        else:
+            dbfilename = "~/.clicol/plugin-aspath.db"
+        if 'unknownstr' in self.setup.keys():  #  Set custom unknown string instead of ---
+            self.unknownstr = self.setup['unknownstr']
         try:
-            dbfile = open(os.path.expanduser("~/.clicol/plugin-aspath.db"),"r")
+            dbfile = open(os.path.expanduser(dbfilename),"r")
         except:
             return
         while True:
@@ -45,9 +56,9 @@ class ASPath:
           if AS in self.db.keys():
              aslist = " ".join((aslist, self.db[AS]))
           else:
-             aslist = " ".join((aslist, "---"))
-       return "%s%s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3),
-                              aslist, aspath.group(4))
+             aslist = " ".join((aslist, self.unknownstr))
+       return "%s%s%s%s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3),
+                              self.cmap['important_value'], aslist, self.cmap['default'], aspath.group(4))
 
     def preprocess(self, input):
        return self.regex.sub(self.resolveas,input)
