@@ -16,7 +16,7 @@ import pudb
 class ASPath:
     loadonstart = True
     db = dict()
-    regex = re.compile(r"^( [^0-9]{3} +(?:[0-9\.:]+/[0-9]+ +(?:[0-9\.:]+ +[0-9]+ +[0-9]+ +)|[0-9.]+ +)[0-9]+ +)((?:[0-9]+ )+)([ie?])([\r\n]*)$", re.M)
+    regex = re.compile(r"^( [\*>sdhirSmbfxact ]{3}.{58,60}| {20,}.{41}) ((?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
     cmap = dict()
     setup = dict()
     unknownstr = "---"
@@ -37,6 +37,10 @@ class ASPath:
         while True:
 	    try:
             	line = dbfile.readline().split("\t")
+                if len(line[0])>0:
+                    if line[0][0] == "#":
+                        # Ignore remarks
+                        continue
                 if len(line)<3:
                     break
             	(AS,SITE,SITECODE) = (line[0], line[1], line[2])  #  First 3 value is interesting
@@ -44,10 +48,13 @@ class ASPath:
 	    except EOFError:
                 break
             except ValueError:
-                break
+                # Ignore bad input
+                pass
             except:
+                pudb.set_trace()
                 raise
 
+        #pudb.set_trace()
         dbfile.close()
 
     def resolveas(self, aspath):
@@ -61,5 +68,6 @@ class ASPath:
                               self.cmap['important_value'], aslist, self.cmap['default'], aspath.group(4))
 
     def preprocess(self, input):
+       #pudb.set_trace()
        return self.regex.sub(self.resolveas,input)
 
