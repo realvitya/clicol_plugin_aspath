@@ -11,12 +11,12 @@ from __future__ import unicode_literals
 import re
 import os
 
-import pudb
+#import pudb
 
 class ASPath:
     loadonstart = True
     db = dict()
-    regex = re.compile(r"^( [\*>sdhirSmbfxact ]{3}.{58,60}| {20,}.{41}) ((?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
+    regex = re.compile(r"^( [\*>sdhirSmbfxact ]{3}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
     cmap = dict()
     setup = dict()
     unknownstr = "---"
@@ -35,23 +35,23 @@ class ASPath:
         except:
             return
         while True:
-	    try:
-            	line = dbfile.readline().split("\t")
+            try:
+                line = dbfile.readline().split("\t")
                 if len(line[0])>0:
                     if line[0][0] == "#":
                         # Ignore remarks
                         continue
                 if len(line)<3:
                     break
-            	(AS,SITE,SITECODE) = (line[0], line[1], line[2])  #  First 3 value is interesting
-	    	self.db[AS] = SITECODE.rstrip()
-	    except EOFError:
+                (AS,SITE,SITECODE) = (line[0], line[1], line[2])  #  First 3 value is interesting
+                self.db[AS] = SITECODE.rstrip()
+            except EOFError:
                 break
             except ValueError:
                 # Ignore bad input
                 pass
             except:
-                pudb.set_trace()
+                #pudb.set_trace()
                 raise
 
         #pudb.set_trace()
@@ -64,8 +64,8 @@ class ASPath:
              aslist = " ".join((aslist, self.db[AS]))
           else:
              aslist = " ".join((aslist, self.unknownstr))
-       return "%s%s%s%s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3),
-                              self.cmap['important_value'], aslist, self.cmap['default'], aspath.group(4))
+       return "%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3),
+                              self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(4))
 
     def preprocess(self, input):
        #pudb.set_trace()
