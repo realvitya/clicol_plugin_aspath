@@ -16,14 +16,15 @@ import os
 class ASPath:
     loadonstart = True
     db = dict()
-    regex = re.compile(r"^( [\*>sdhirSmbfxact ]{3}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
     cmap = dict()
     setup = dict()
     unknownstr = "---"
+    regex = ()
 
     def __init__(self, setup):
         #pudb.set_trace()
         (self.setup, self.cmap) = setup
+        self.regex = re.compile(self.cmap['BOL']+r"( [\*>sdhirSmbfxact ]{3}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
         if 'dbfile' in self.setup.keys():  #  Set custom dbfile
             dbfilename = self.setup['dbfile']
         else:
@@ -59,13 +60,13 @@ class ASPath:
 
     def resolveas(self, aspath):
        aslist = ""
-       for AS in aspath.group(2).split():
+       for AS in aspath.group(3).split():
           if AS in self.db.keys():
              aslist = " ".join((aslist, self.db[AS]))
           else:
              aslist = " ".join((aslist, self.unknownstr))
-       return "%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3),
-                              self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(4))
+       return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3), aspath.group(4),
+                              self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(5))
 
     def preprocess(self, input):
        #pudb.set_trace()
