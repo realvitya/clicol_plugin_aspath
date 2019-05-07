@@ -72,3 +72,8 @@ class ASPath:
        #pudb.set_trace()
        return self.regex.sub(self.resolveas,input)
 
+    def test(self):
+        return ("plugin.aspath", "\n preprocess:%s" % self.preprocess("""
+ * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ?
+ *>                    10.123.234.154                         0 21302 13979 65120 64932 ?"""))
+
