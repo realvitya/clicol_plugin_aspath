@@ -11,7 +11,6 @@ from __future__ import unicode_literals
 import re
 import os
 
-#import pudb
 
 class ASPath:
     loadonstart = True
@@ -20,9 +19,9 @@ class ASPath:
     setup = dict()
     unknownstr = "---"
     regex = ()
+    outtype = "append"
 
     def __init__(self, setup):
-        #pudb.set_trace()
         (self.setup, self.cmap) = setup
         self.regex = re.compile(self.cmap['BOL']+r"( [\*>sdhirSmbfxact ]{3}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
         if 'dbfile' in self.setup.keys():  #  Set custom dbfile
@@ -31,6 +30,9 @@ class ASPath:
             dbfilename = "~/.clicol/plugin-aspath.db"
         if 'unknownstr' in self.setup.keys():  #  Set custom unknown string instead of ---
             self.unknownstr = self.setup['unknownstr']
+        if 'outtype' in self.setup.keys():  #  Set output type (inline|append)
+            if self.setup['outtype'] in ("inline", "append"):
+                self.outtype = self.setup['outtype']
         try:
             dbfile = open(os.path.expanduser(dbfilename),"r")
         except:
@@ -52,25 +54,31 @@ class ASPath:
                 # Ignore bad input
                 pass
             except:
-                #pudb.set_trace()
                 raise
 
-        #pudb.set_trace()
         dbfile.close()
 
     def resolveas(self, aspath):
-       aslist = ""
-       for AS in aspath.group(3).split():
-          if AS in self.db.keys():
-             aslist = " ".join((aslist, self.db[AS]))
-          else:
-             aslist = " ".join((aslist, self.unknownstr))
-       return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3), aspath.group(4),
-                              self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(5))
+        aslist = ""
+        if self.outtype == "inline":
+            for AS in aspath.group(3).split():
+                if AS in self.db.keys():
+                    aslist += "%s(%s%s%s) " % (AS, self.cmap['important_value'], self.db[AS], self.cmap['default'])
+                else:
+                    aslist += "%s " % AS
+	    return "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
+        else:
+            #  Append output type
+            for AS in aspath.group(3).split():
+                if AS in self.db.keys():
+                    aslist = " ".join((aslist, self.db[AS]))
+                else:
+                    aslist = " ".join((aslist, self.unknownstr))
+            return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3), aspath.group(4),
+                                      self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(5))
 
-    def preprocess(self, input):
-       #pudb.set_trace()
-       return self.regex.sub(self.resolveas,input)
+    def preprocess(self, input, effects=[]):
+        return self.regex.sub(self.resolveas,input)
 
     def test(self):
         return ("plugin.aspath", "\n preprocess:%s" % self.preprocess("""
