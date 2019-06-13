@@ -66,7 +66,7 @@ class ASPath:
                     aslist += "%s(%s%s%s) " % (AS, self.cmap['important_value'], self.db[AS], self.cmap['default'])
                 else:
                     aslist += "%s " % AS
-	    return "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
+            return "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
         else:
             #  Append output type
             for AS in aspath.group(3).split():
