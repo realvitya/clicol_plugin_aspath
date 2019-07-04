@@ -27,6 +27,8 @@ Example with defaults:
 	 #dbfile=~/.clicol/plugin-aspath.db
 	 # what to print on unknown AS
 	 #unknownstr=---
+     # Force dotted format for 4bytes AS numbers (no need to reconfigure router!)
+     #forcedotformat=no
 	 
 Format of database file:
 `{ASNUM}\t{DESCRIPTION}\t{SITECODE}`
@@ -36,3 +38,7 @@ Example:
 
 	21302	AT&T EAME	ATT	-	Vendor
 	13979	AT&T NA	ATT
+
+### Thanks to
+    I was using [tbaschak](https://github.com/tbaschak)'s [asdot-asplain](https://github.com/tbaschak/asdot-asplain) library for 4byte AS number conversion. Thanks!
+

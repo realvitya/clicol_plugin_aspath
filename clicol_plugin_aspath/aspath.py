@@ -8,9 +8,9 @@
 """
 from __future__ import print_function
 from __future__ import unicode_literals
+from asnconvert import asplain2asdot
 import re
 import os
-
 
 class ASPath:
     loadonstart = True
@@ -20,6 +20,7 @@ class ASPath:
     unknownstr = "---"
     regex = ()
     outtype = "append"
+    forcedotformat = "yes"
 
     def __init__(self, setup):
         (self.setup, self.cmap) = setup
@@ -30,6 +31,11 @@ class ASPath:
             dbfilename = "~/.clicol/plugin-aspath.db"
         if 'unknownstr' in self.setup.keys():  #  Set custom unknown string instead of ---
             self.unknownstr = self.setup['unknownstr']
+        if 'forcedotformat' in self.setup.keys():  #  Set custom unknown string instead of ---
+            self.forcedotformat = self.setup['forcedotformat']
+            #  accept only below values
+            if self.forcedotformat in ("y", "Y", "yes","Yes","on","On","1"):
+		self.forcedotformat = "yes"
         if 'outtype' in self.setup.keys():  #  Set output type (inline|append)
             if self.setup['outtype'] in ("inline", "append"):
                 self.outtype = self.setup['outtype']
@@ -62,6 +68,8 @@ class ASPath:
         aslist = ""
         if self.outtype == "inline":
             for AS in aspath.group(3).split():
+		if self.forcedotformat == "yes" and (AS>65535):
+                    AS = asplain2asdot(AS)
                 if AS in self.db.keys():
                     aslist += "%s(%s%s%s) " % (AS, self.cmap['important_value'], self.db[AS], self.cmap['default'])
                 else:
@@ -70,6 +78,8 @@ class ASPath:
         else:
             #  Append output type
             for AS in aspath.group(3).split():
+		if self.forcedotformat == "yes" and (AS>65535):
+                    AS = asplain2asdot(AS)
                 if AS in self.db.keys():
                     aslist = " ".join((aslist, self.db[AS]))
                 else:
