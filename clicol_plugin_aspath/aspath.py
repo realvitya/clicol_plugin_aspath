@@ -24,18 +24,18 @@ class ASPath:
 
     def __init__(self, setup):
         (self.setup, self.cmap) = setup
-        self.regex = re.compile(self.cmap['BOL']+r"( [\*>sdhirSmbfxact ]{3}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
+        self.regex = re.compile(self.cmap['BOL']+r"( [\*>sdhirSmbfxact ]{2}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
         if 'dbfile' in self.setup.keys():  #  Set custom dbfile
             dbfilename = self.setup['dbfile']
         else:
             dbfilename = "~/.clicol/plugin-aspath.db"
         if 'unknownstr' in self.setup.keys():  #  Set custom unknown string instead of ---
             self.unknownstr = self.setup['unknownstr']
-        if 'forcedotformat' in self.setup.keys():  #  Set custom unknown string instead of ---
+        if 'forcedotformat' in self.setup.keys():  #  convert decimal format AS number to dotted format
             self.forcedotformat = self.setup['forcedotformat']
             #  accept only below values
             if self.forcedotformat in ("y", "Y", "yes","Yes","on","On","1"):
-		self.forcedotformat = "yes"
+                self.forcedotformat = "yes"
         if 'outtype' in self.setup.keys():  #  Set output type (inline|append)
             if self.setup['outtype'] in ("inline", "append"):
                 self.outtype = self.setup['outtype']
@@ -66,25 +66,26 @@ class ASPath:
 
     def resolveas(self, aspath):
         aslist = ""
-        if self.outtype == "inline":
-            for AS in aspath.group(3).split():
-		if self.forcedotformat == "yes" and (AS>65535):
-                    AS = asplain2asdot(AS)
-                if AS in self.db.keys():
+        aslist_in = aspath.group(3)
+        for AS in aslist_in.split():
+            if self.forcedotformat == "yes" and (AS>65535):
+                AS_dotted = asplain2asdot(AS)
+                aslist_in = aslist_in.replace(AS, AS_dotted)
+                AS = AS_dotted
+            if AS in self.db.keys():
+                if self.outtype == "inline":
                     aslist += "%s(%s%s%s) " % (AS, self.cmap['important_value'], self.db[AS], self.cmap['default'])
                 else:
+                   aslist = " ".join((aslist, self.db[AS]))
+            else:
+                if self.outtype == "inline":
                     aslist += "%s " % AS
-            return "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
-        else:
-            #  Append output type
-            for AS in aspath.group(3).split():
-		if self.forcedotformat == "yes" and (AS>65535):
-                    AS = asplain2asdot(AS)
-                if AS in self.db.keys():
-                    aslist = " ".join((aslist, self.db[AS]))
                 else:
                     aslist = " ".join((aslist, self.unknownstr))
-            return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aspath.group(3), aspath.group(4),
+        if self.outtype == "inline":
+            return "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
+        else:
+            return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aslist_in, aspath.group(4),
                                       self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(5))
 
     def preprocess(self, input, effects=[]):
