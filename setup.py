@@ -45,7 +45,7 @@ setup(
     #    ('share/doc/clicol', ['doc/bashrc','doc/clicol.cfg']),
     #],
     install_requires=[
-        'clicol>=1.1.0',
+        'clicol>=1.1.2-3',
     ],
     entry_points={'clicol.plugins': [
         'ASPath = clicol_plugin_aspath.aspath:ASPath',

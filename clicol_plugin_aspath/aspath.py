@@ -88,11 +88,11 @@ class ASPath:
             return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aslist_in, aspath.group(4),
                                       self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(5))
 
-    def preprocess(self, input, effects=[]):
+    def plugin_preprocess(self, input, effects=[]):
         return self.regex.sub(self.resolveas,input)
 
-    def test(self):
-        return ("plugin.aspath", "\n preprocess:%s" % self.preprocess("""
+    def plugin_test(self):
+        return ("plugin.aspath", "\n preprocess:%s" % self.plugin_preprocess("""
  * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ?
  *>                    10.123.234.154                         0 21302 13979 65120 64932 ?"""))
 
