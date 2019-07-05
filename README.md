@@ -40,5 +40,5 @@ Example:
 	13979	AT&T NA	ATT
 
 ### Thanks to
-    I was using [tbaschak](https://github.com/tbaschak)'s [asdot-asplain](https://github.com/tbaschak/asdot-asplain) library for 4byte AS number conversion. Thanks!
+I was using [tbaschak](https://github.com/tbaschak)'s [asdot-asplain](https://github.com/tbaschak/asdot-asplain) library for 4byte AS number conversion. Thanks!
 
