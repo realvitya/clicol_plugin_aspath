@@ -8,7 +8,7 @@
 """
 from __future__ import print_function
 from __future__ import unicode_literals
-from asnconvert import asplain2asdot
+from .asnconvert import asplain2asdot
 import re
 import os
 
@@ -68,7 +68,7 @@ class ASPath:
         aslist = ""
         aslist_in = aspath.group(3)
         for AS in aslist_in.split():
-            if self.forcedotformat == "yes" and (AS>65535):
+            if self.forcedotformat == "yes" and (int(AS)>65535):
                 AS_dotted = asplain2asdot(AS)
                 aslist_in = aslist_in.replace(AS, AS_dotted)
                 AS = AS_dotted
