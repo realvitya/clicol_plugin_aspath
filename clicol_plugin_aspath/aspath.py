@@ -103,7 +103,7 @@ class ASPath:
 
     def plugin_help(self, command):
         if command == self.__ASPATH_KEY:
-            return " Resolve AS PATH\r\n"
+            return " Resolve AS PATH"
         else:
             return ""
 
