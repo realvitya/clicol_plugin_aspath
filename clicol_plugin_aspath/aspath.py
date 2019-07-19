@@ -99,7 +99,7 @@ class ASPath:
             aspath = str(input("\r" + " " * 100 + "\rASPATH: "))
             m = re.match("()()((?:[0-9]+)(?: [0-9]+)?)()()", aspath)
             if m:
-                print("Resolved:" + self.resolveas(m).strip())
+                print("Resolved:" + self.resolveas(m).strip().encode().decode('unicode_escape'))
 
     def plugin_help(self, command):
         if command == self.__ASPATH_KEY:
