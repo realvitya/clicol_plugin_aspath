@@ -8,6 +8,7 @@
 """
 from __future__ import print_function
 from __future__ import unicode_literals
+from builtins import input
 from .asnconvert import asplain2asdot
 import re
 import os
@@ -21,10 +22,12 @@ class ASPath:
     regex = ()
     outtype = "append"
     forcedotformat = "yes"
+    __ASPATH_KEY = "A"
+    keybinds = (__ASPATH_KEY)
 
     def __init__(self, setup):
         (self.setup, self.cmap) = setup
-        self.regex = re.compile(self.cmap['BOL']+r"( [\*>sdhirSmbfxact ]{2}.{58,60}| {21,})( (?:[0-9]+ *)+)( [ie?])([\r\n]*)$", re.M)
+        self.regex = re.compile(self.cmap['BOL']+r"( [\*>sdhirSmbfxact ]{2}.{58,60}| {21,})( (?:[0-9.]+ *)+)( [ie?])([\r\n]*)$", re.M)
         if 'dbfile' in self.setup.keys():  #  Set custom dbfile
             dbfilename = self.setup['dbfile']
         else:
@@ -90,6 +93,19 @@ class ASPath:
 
     def plugin_preprocess(self, input, effects=[]):
         return self.regex.sub(self.resolveas,input)
+
+    def plugin_command(self, cmd):
+        if cmd == self.__ASPATH_KEY:
+            aspath = str(input("\r" + " " * 100 + "\rASPATH: "))
+            m = re.match("()()((?:[0-9]+)(?: [0-9]+)?)()()", aspath)
+            if m:
+                print("Resolved:" + self.resolveas(m).strip())
+
+    def plugin_help(self, command):
+        if command == self.__ASPATH_KEY:
+            return " Resolve AS PATH\r\n"
+        else:
+            return ""
 
     def plugin_test(self):
         return ("plugin.aspath", "\n preprocess:%s" % self.plugin_preprocess("""
