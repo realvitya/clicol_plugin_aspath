@@ -71,7 +71,7 @@ class ASPath:
         aslist = ""
         aslist_in = aspath.group(3)
         for AS in aslist_in.split():
-            if self.forcedotformat == "yes" and (int(AS)>65535):
+            if "." not in AS and self.forcedotformat == "yes" and (int(AS)>65535):
                 AS_dotted = asplain2asdot(AS)
                 aslist_in = aslist_in.replace(AS, AS_dotted)
                 AS = AS_dotted
