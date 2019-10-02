@@ -27,7 +27,7 @@ class ASPath:
 
     def __init__(self, setup):
         (self.setup, self.cmap) = setup
-        self.regex = re.compile(self.cmap['BOL']+r"( ?[\*>sdhirSmbfxact ]{2,3}[0-9\./ ]{58,60}| {21,})( (?:[1-9][0-9\.]* *)+)( [ie?])([\r\n]*)$", re.M)
+        self.regex = re.compile(self.cmap['BOL']+r"((?: ?[\*>sdhirSmbfxact ]{2,3} *(?:[0-9\./]+)? +| )(?:[0-9]+\.)+[0-9]+(?: +[0-9]+)? +[0-9]+ +)([0-9]+ (?:[1-9][0-9\.]* *)+)( [ie?])([\r\n]*)$", re.M)
         if 'dbfile' in self.setup.keys():  #  Set custom dbfile
             dbfilename = self.setup['dbfile']
         else:
