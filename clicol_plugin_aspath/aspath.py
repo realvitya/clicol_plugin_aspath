@@ -13,6 +13,7 @@ from .asnconvert import asplain2asdot
 import re
 import os
 
+
 class ASPath:
     loadonstart = True
     db = dict()
@@ -27,35 +28,37 @@ class ASPath:
 
     def __init__(self, setup):
         (self.setup, self.cmap) = setup
-        self.regex = re.compile(self.cmap['BOL']+r"((?: ?[\*>sdhirSmbfxact ]{2,3} *(?:[0-9\./]+)? +| )(?:[0-9]+\.)+[0-9]+(?: +[0-9]+)? +[0-9]+ +)([0-9]+ (?:[1-9][0-9\.]* *)+)( [ie?])([\r\n]*)$", re.M)
-        if 'dbfile' in self.setup.keys():  #  Set custom dbfile
+        self.regex = re.compile(self.cmap['BOL'] + r"((?: ?[*>sdhirSmbfxact ]{2,3} *(?:[0-9./]+)? +| )(?:[0-9]+\.)+["
+                                                   r"0-9]+(?: +[0-9]+)? +[0-9]+ +)([0-9]+ (?:[1-9][0-9.]* *)+)( "
+                                                   r"[ie?])([\r\n]*)$", re.M)
+        if 'dbfile' in self.setup.keys():  # Set custom dbfile
             dbfilename = self.setup['dbfile']
         else:
             dbfilename = "~/.clicol/plugin-aspath.db"
-        if 'unknownstr' in self.setup.keys():  #  Set custom unknown string instead of ---
+        if 'unknownstr' in self.setup.keys():  # Set custom unknown string instead of ---
             self.unknownstr = self.setup['unknownstr']
-        if 'forcedotformat' in self.setup.keys():  #  convert decimal format AS number to dotted format
+        if 'forcedotformat' in self.setup.keys():  # convert decimal format AS number to dotted format
             self.forcedotformat = self.setup['forcedotformat']
             #  accept only below values
-            if self.forcedotformat in ("y", "Y", "yes","Yes","on","On","1"):
+            if self.forcedotformat in ("y", "Y", "yes", "Yes", "on", "On", "1"):
                 self.forcedotformat = "yes"
-        if 'outtype' in self.setup.keys():  #  Set output type (inline|append)
+        if 'outtype' in self.setup.keys():  # Set output type (inline|append)
             if self.setup['outtype'] in ("inline", "append"):
                 self.outtype = self.setup['outtype']
         try:
-            dbfile = open(os.path.expanduser(dbfilename),"r")
-        except:
+            dbfile = open(os.path.expanduser(dbfilename), "r")
+        except IOError:
             return
         while True:
             try:
                 line = dbfile.readline().split("\t")
-                if len(line[0])>0:
+                if len(line[0]) > 0:
                     if line[0][0] == "#":
                         # Ignore remarks
                         continue
-                if len(line)<3:
+                if len(line) < 3:
                     break
-                (AS,SITE,SITECODE) = (line[0], line[1], line[2])  #  First 3 value is interesting
+                (AS, SITE, SITECODE) = (line[0], line[1], line[2])  # First 3 value is interesting
                 self.db[AS] = SITECODE.rstrip()
             except EOFError:
                 break
@@ -71,7 +74,7 @@ class ASPath:
         aslist = ""
         aslist_in = aspath.group(3)
         for AS in aslist_in.split():
-            if "." not in AS and self.forcedotformat == "yes" and (int(AS)>65535):
+            if "." not in AS and self.forcedotformat == "yes" and (int(AS) > 65535):
                 AS_dotted = asplain2asdot(AS)
                 aslist_in = aslist_in.replace(AS, AS_dotted)
                 AS = AS_dotted
@@ -79,7 +82,7 @@ class ASPath:
                 if self.outtype == "inline":
                     aslist += "%s(%s%s%s) " % (AS, self.cmap['important_value'], self.db[AS], self.cmap['default'])
                 else:
-                   aslist = " ".join((aslist, self.db[AS]))
+                    aslist = " ".join((aslist, self.db[AS]))
             else:
                 if self.outtype == "inline":
                     aslist += "%s " % AS
@@ -89,7 +92,8 @@ class ASPath:
             return "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
         else:
             return "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aslist_in, aspath.group(4),
-                                      self.cmap['important_value'], aslist.lstrip(), self.cmap['default'], aspath.group(5))
+                                          self.cmap['important_value'], aslist.lstrip(), self.cmap['default'],
+                                          aspath.group(5))
 
     def plugin_preprocess(self, input, effects=[]):
         return self.regex.sub(self.resolveas,input)
@@ -111,4 +115,3 @@ class ASPath:
         return ("plugin.aspath", "\n preprocess:%s" % self.plugin_preprocess("""
  * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ?
  *>                    10.123.234.154                         0 21302 13979 65120 64932 ?"""))
-
