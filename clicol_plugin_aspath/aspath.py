@@ -71,6 +71,11 @@ class ASPath:
         dbfile.close()
 
     def resolveas(self, aspath):
+        """
+        Add AS sitecodes to the ASPATH
+        :param aspath: space delimited AS path list
+        :return: Add sitecodes to AS path list
+        """
         aslist = ""
         aslist_in = aspath.group(3)
         for AS in aslist_in.split():
@@ -96,11 +101,21 @@ class ASPath:
                                           aspath.group(5))
 
     def plugin_preprocess(self, inputtext, effects=None):
-        if effects is None:
-            effects = []
+        """
+        Search and add sitecode data to input text
+        :param inputtext: Text to process
+        :param effects: not used here
+        :return: processed text
+        """
+        # if effects is None:
+        #    effects = []
         return self.regex.sub(self.resolveas, inputtext)
 
     def plugin_command(self, cmd):
+        """
+        In the event of user command, this method is run. First plugin checks if it needs to run...
+        :param cmd: command by user.
+        """
         if cmd == self.__ASPATH_KEY:
             aspath = str(input("\r" + " " * 100 + "\rASPATH: "))
             m = re.match("()()((?:[0-9]+)(?: [0-9]+)?)()()", aspath)
@@ -108,12 +123,21 @@ class ASPath:
                 print("Resolved:" + self.resolveas(m).strip().encode().decode('unicode_escape'))
 
     def plugin_help(self, command):
+        """
+         For quick help this function is used to return the help text
+         :param command: for checking if we need to return the help text
+         :return: If the command is ours, return the help text
+         """
         if command == self.__ASPATH_KEY:
             return " Resolve AS PATH"
         else:
             return ""
 
     def plugin_test(self):
+        """
+        Do plugin test
+        :return: Test output by this plugin
+        """
         return ("plugin.aspath", "\n preprocess:%s" % self.plugin_preprocess("""
  * i  10.0.35.48/28    10.123.123.158           0    100      0 21302 13979 65120 64932 ?
  *>                    10.123.234.154                         0 21302 13979 65120 64932 ?"""))

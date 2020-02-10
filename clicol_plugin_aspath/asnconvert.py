@@ -10,9 +10,13 @@ def asdot2plain( asdot ):
     ret = int(left) * 65536 + int(right)
     return ret
 
-def asplain2asdot( asplain ):
-    "This returns an ASDOT+ formated ASN given an ASPLAIN format,"
-    "unless given a 16-bit ASN"
+
+def asplain2asdot(asplain):
+    """
+    This returns an ASDOT+ formatted ASN given an ASPLAIN format, unless given a 16-bit ASN
+    :param asplain: ASPLAIN formatted AS number
+    :return: ASDOT+ formatted AS number
+    """
     begin = int(asplain)
     current = begin
     new = current
