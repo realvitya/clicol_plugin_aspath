@@ -3,9 +3,14 @@
 from __future__ import print_function
 import re
 
-def asdot2plain( asdot ):
-    "This returns an ASPLAIN formated ASN given an ASDOT+ format"
-    left,right = re.split('\.|:', asdot)
+
+def asdot2plain(asdot):
+    """
+    This returns an ASPLAIN formatted ASN from ASDOT+ format
+    :param asdot: ASDOT+ formatted AS number
+    :return: ASPLAIN formatted AS number
+    """
+    left, right = re.split(r"[.:]", asdot)
     ret = int(left) * 65536 + int(right)
     return ret
 
@@ -29,4 +34,3 @@ def asplain2asdot(asplain):
     else:
         ret = str(counter) + "." + str(new)
     return ret
-
