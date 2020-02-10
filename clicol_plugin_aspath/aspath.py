@@ -95,8 +95,10 @@ class ASPath:
                                           self.cmap['important_value'], aslist.lstrip(), self.cmap['default'],
                                           aspath.group(5))
 
-    def plugin_preprocess(self, input, effects=[]):
-        return self.regex.sub(self.resolveas,input)
+    def plugin_preprocess(self, inputtext, effects=None):
+        if effects is None:
+            effects = []
+        return self.regex.sub(self.resolveas, inputtext)
 
     def plugin_command(self, cmd):
         if cmd == self.__ASPATH_KEY:
