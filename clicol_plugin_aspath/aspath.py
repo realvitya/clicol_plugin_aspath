@@ -118,7 +118,7 @@ class ASPath:
         """
         if cmd == self.__ASPATH_KEY:
             aspath = str(input("\r" + " " * 100 + "\rASPATH: "))
-            m = re.match("()()((?:[0-9]+)(?: [0-9]+)?)()()", aspath)
+            m = re.match(r"()()((?:[0-9]+)(?: [0-9]+)?)()()", aspath)
             if m:
                 print("Resolved:" + self.resolveas(m).strip().encode().decode('unicode_escape'))
 

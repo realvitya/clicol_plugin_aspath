@@ -2,7 +2,6 @@
 
 from __future__ import print_function
 import re
-import sys
 
 def asdot2plain( asdot ):
     "This returns an ASPLAIN formated ASN given an ASDOT+ format"
@@ -22,7 +21,7 @@ def asplain2asdot(asplain):
     new = current
     counter = 0
     while current > 65535:
-        new = current - 65536;
+        new = current - 65536
         counter = counter + 1
         current = new
     if counter == 0:
