@@ -119,10 +119,12 @@ class ASPath:
         :param cmd: command by user.
         """
         if cmd == self.__ASPATH_KEY:
-            aspath = str(input("\r" + " " * 100 + "\rASPATH: "))
-            m = re.match(r"()()((?:[0-9]+)(?: [0-9]+)?)()()", aspath)
+            aspath = str(input("\r" + " " * 100 + "\rASPATH: ")).strip()
+            m = re.match(r"^()()([0-9. ]+)()()$", aspath)
             if m:
                 print("Resolved:" + self.resolveas(m).strip().encode().decode('unicode_escape'))
+            else:
+                print("Invalid input!")
 
     def plugin_help(self, command):
         """
