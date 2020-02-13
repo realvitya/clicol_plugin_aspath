@@ -94,11 +94,12 @@ class ASPath:
                 else:
                     aslist = " ".join((aslist, self.unknownstr))
         if self.outtype == "inline":
-            output = "%s%s %s%s%s" % (aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
+            output = "%s%s %s%s%s" % (
+                aspath.group(1), aspath.group(2), aslist.rstrip(), aspath.group(4), aspath.group(5))
         else:
             output = "%s%s%s%s %s%s%s%s" % (aspath.group(1), aspath.group(2), aslist_in, aspath.group(4),
-                                          self.cmap['important_value'], aslist.lstrip(), self.cmap['default'],
-                                          aspath.group(5))
+                                            self.cmap['important_value'], aslist.lstrip(), self.cmap['default'],
+                                            aspath.group(5))
         return output.encode().decode('unicode_escape')
 
     def plugin_preprocess(self, inputtext, effects=None):
