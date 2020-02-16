@@ -1,6 +1,6 @@
 CLICOL PLUGIN ASPATH
 ====================
-Plugin for clicol which helps troubleshooting by resolving sitecodes for AS path.
+Plugin for [clicol](https://github.com/realvitya/clicol) which helps troubleshooting by resolving sitecodes for AS path.
 
 ### Example
 
