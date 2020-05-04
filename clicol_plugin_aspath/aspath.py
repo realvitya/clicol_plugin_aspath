@@ -16,9 +16,9 @@ import os
 
 class ASPath:
     loadonstart = True
-    db = dict()
-    cmap = dict()
-    setup = dict()
+    db = {}
+    cmap = {}
+    setup = {}
     unknownstr = "---"
     regex = ()
     outtype = "append"
